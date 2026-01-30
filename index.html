@@ -688,20 +688,30 @@
         triggerSaveFlash();
       }
 
-      function requestNotificationPermission() {
-        if (!("Notification" in window)) {
-          alert("Browser doesn't support notifications.");
-          return;
+     function requestNotificationPermission() {
+    if (!("Notification" in window)) {
+        alert("This browser does not support notifications.");
+        return;
+    }
+
+    // Force a fresh request
+    Notification.requestPermission().then(permission => {
+        updateNotifStatus(permission);
+        if (permission === "granted") {
+            try {
+                const testNotif = new Notification("Vault Security 🛡️", {
+                    body: "Notifications are successfully enabled!",
+                    icon: "https://cdn-icons-png.flaticon.com/512/1066/1066371.png"
+                });
+                console.log("Notification sent successfully");
+            } catch (e) {
+                alert("Permission granted, but the system blocked the banner. Check 'Do Not Disturb' settings.");
+            }
+        } else {
+            alert("Notification permission was " + permission + ". Click the Lock icon in the URL bar to reset.");
         }
-        Notification.requestPermission().then((permission) => {
-          updateNotifStatus(permission);
-          if (permission === "granted") {
-            new Notification("Notifications Active!", {
-              body: "Reminders are now set.",
-            });
-          }
-        });
-      }
+    });
+}
 
       function updateNotifStatus(perm) {
         const statusText = document.getElementById("notif-status");
@@ -1014,3 +1024,4 @@
     </script>
   </body>
 </html>
+
