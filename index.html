@@ -676,352 +676,264 @@
 
     <script>
       let dt = new Date();
-      let data = JSON.parse(localStorage.getItem("diaryData")) || {};
-      let selectedDateKey = null;
-      let savedPin = localStorage.getItem("diaryPin");
-      let isAnalog = false;
+    let data = JSON.parse(localStorage.getItem("diaryData")) || {};
+    let selectedDateKey = null;
+    let savedPin = localStorage.getItem("diaryPin");
+    let isAnalog = false;
 
-      // --- REMINDER LOGIC ---
-      function saveReminderTime() {
-        const timeValue = document.getElementById("reminder-time").value;
-        localStorage.setItem("diaryReminderTime", timeValue);
-        triggerSaveFlash();
-      }
-
-     function requestNotificationPermission() {
-    if (!("Notification" in window)) {
-        alert("This browser does not support notifications.");
-        return;
+    // --- AUTO-LOCK LOGIC ---
+    let idleTimer;
+    function resetIdleTimer() {
+        clearTimeout(idleTimer);
+        // 300,000 milliseconds = 5 minutes
+        idleTimer = setTimeout(() => {
+            if (!document.getElementById('lock-screen').style.display || 
+                 document.getElementById('lock-screen').style.display === 'none') {
+                location.reload(); // Hard lock by refreshing
+            }
+        }, 300000); 
     }
 
-    // Force a fresh request
-    Notification.requestPermission().then(permission => {
-        updateNotifStatus(permission);
-        if (permission === "granted") {
-            try {
-                const testNotif = new Notification("Vault Security 🛡️", {
-                    body: "Notifications are successfully enabled!",
-                    icon: "https://cdn-icons-png.flaticon.com/512/1066/1066371.png"
-                });
-                console.log("Notification sent successfully");
-            } catch (e) {
-                alert("Permission granted, but the system blocked the banner. Check 'Do Not Disturb' settings.");
+    // Listen for any activity to reset the timer
+    window.onload = resetIdleTimer;
+    window.onmousemove = resetIdleTimer;
+    window.onmousedown = resetIdleTimer; 
+    window.ontouchstart = resetIdleTimer;
+    window.onclick = resetIdleTimer;
+    window.onkeypress = resetIdleTimer;
+
+    // --- REMINDER LOGIC ---
+    function saveReminderTime() {
+        const timeValue = document.getElementById('reminder-time').value;
+        localStorage.setItem("diaryReminderTime", timeValue);
+        triggerSaveFlash();
+    }
+
+    function requestNotificationPermission() {
+        if (!("Notification" in window)) {
+            alert("Browser doesn't support notifications.");
+            return;
+        }
+        Notification.requestPermission().then(permission => {
+            updateNotifStatus(permission);
+            if (permission === "granted") {
+                try {
+                    new Notification("Vault Security 🛡️", { 
+                        body: "Reminders are now active!",
+                        icon: "https://cdn-icons-png.flaticon.com/512/1066/1066371.png"
+                    });
+                } catch(e) {
+                    alert("Permission granted! If no pop-up appeared, check your Windows/Mac 'Do Not Disturb' settings.");
+                }
+            } else {
+                alert("Permission " + permission + ". Click the Lock icon in the URL bar to reset.");
             }
-        } else {
-            alert("Notification permission was " + permission + ". Click the Lock icon in the URL bar to reset.");
-        }
-    });
-}
+        });
+    }
 
-      function updateNotifStatus(perm) {
-        const statusText = document.getElementById("notif-status");
+    function updateNotifStatus(perm) {
+        const statusText = document.getElementById('notif-status');
         if (perm === "granted") {
-          statusText.innerText = "Permission: Active ✅";
-          statusText.style.color = "var(--success)";
+            statusText.innerText = "Permission: Active ✅";
+            statusText.style.color = "var(--success)";
         } else if (perm === "denied") {
-          statusText.innerText = "Permission: Blocked ❌";
-          statusText.style.color = "var(--danger)";
+            statusText.innerText = "Permission: Blocked ❌";
+            statusText.style.color = "var(--danger)";
         } else {
-          statusText.innerText = "Permission: Not Set ⚠️";
+            statusText.innerText = "Permission: Not Set ⚠️";
         }
-      }
+    }
 
-      function checkReminder() {
+    function checkReminder() {
         const savedTime = localStorage.getItem("diaryReminderTime");
         if (!savedTime || Notification.permission !== "granted") return;
         const now = new Date();
-        const currentTime =
-          now.getHours().toString().padStart(2, "0") +
-          ":" +
-          now.getMinutes().toString().padStart(2, "0");
+        const currentTime = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
         if (currentTime === savedTime) {
-          const todayKey = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
-          if (
-            !data[todayKey] ||
-            (!data[todayKey].note &&
-              (!data[todayKey].photos || data[todayKey].photos.length === 0))
-          ) {
-            new Notification("Diary Reminder 📖", {
-              body: "You haven't recorded anything today!",
-            });
-          }
+            const todayKey = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
+            if (!data[todayKey] || (!data[todayKey].note && (!data[todayKey].photos || data[todayKey].photos.length === 0))) {
+                new Notification("Diary Reminder 📖", { body: "You haven't recorded anything today!" });
+            }
         }
-      }
-      setInterval(checkReminder, 60000);
+    }
+    setInterval(checkReminder, 60000);
 
-      // --- CLOCK LOGIC ---
-      function updateClock() {
+    // --- CLOCK LOGIC ---
+    function updateClock() {
         const now = new Date();
-        const days = [
-          "Sunday",
-          "Monday",
-          "Tuesday",
-          "Wednesday",
-          "Thursday",
-          "Friday",
-          "Saturday",
-        ];
-        document.getElementById("clock-day").innerText = days[now.getDay()];
-        document.getElementById("clock-time").innerText =
-          now.toLocaleTimeString();
-        const s = now.getSeconds(),
-          m = now.getMinutes(),
-          h = now.getHours();
-        document.getElementById("s-hand").style.transform =
-          `rotate(${s * 6}deg)`;
-        document.getElementById("m-hand").style.transform =
-          `rotate(${m * 6}deg)`;
-        document.getElementById("h-hand").style.transform =
-          `rotate(${h * 30 + m / 2}deg)`;
-      }
-      setInterval(updateClock, 1000);
-      updateClock();
-
-      function toggleClockMode() {
-        isAnalog = !isAnalog;
-        document.getElementById("digital-view").style.display = isAnalog
-          ? "none"
-          : "block";
-        document.getElementById("analog-view").style.display = isAnalog
-          ? "block"
-          : "none";
-      }
-
-      // --- PIN LOGIC ---
-      if (savedPin)
-        document.getElementById("lock-msg").innerText = "Enter Vault PIN";
-      function validatePin() {
-        const input = document.getElementById("pin-input");
-        if (input.value.length === 4) {
-          if (!savedPin) {
-            localStorage.setItem("diaryPin", input.value);
-            unlockDiary();
-          } else if (input.value === savedPin) {
-            unlockDiary();
-          } else {
-            alert("Incorrect PIN");
-            input.value = "";
-          }
+        const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        document.getElementById('clock-day').innerText = days[now.getDay()];
+        document.getElementById('clock-time').innerText = now.toLocaleTimeString();
+        const s = now.getSeconds(), m = now.getMinutes(), h = now.getHours();
+        if(isAnalog){
+            document.getElementById('s-hand').style.transform = `rotate(${s * 6}deg)`;
+            document.getElementById('m-hand').style.transform = `rotate(${m * 6}deg)`;
+            document.getElementById('h-hand').style.transform = `rotate(${h * 30 + m / 2}deg)`;
         }
-      }
-      function unlockDiary() {
-        document.getElementById("lock-screen").style.display = "none";
-      }
+    }
+    setInterval(updateClock, 1000);
 
-      // --- CORE DIARY FUNCTIONS ---
-      function renderCalendar() {
+    function toggleClockMode() {
+        isAnalog = !isAnalog;
+        document.getElementById('digital-view').style.display = isAnalog ? 'none' : 'block';
+        document.getElementById('analog-view').style.display = isAnalog ? 'block' : 'none';
+        updateClock();
+    }
+
+    // --- PIN LOGIC ---
+    if(savedPin) document.getElementById('lock-msg').innerText = "Enter Vault PIN";
+    function validatePin() {
+        const input = document.getElementById('pin-input');
+        if (input.value.length === 4) {
+            if (!savedPin) {
+                localStorage.setItem("diaryPin", input.value);
+                unlockDiary();
+            } else if (input.value === savedPin) {
+                unlockDiary();
+            } else {
+                alert("Incorrect PIN");
+                input.value = "";
+            }
+        }
+    }
+    function unlockDiary() { document.getElementById('lock-screen').style.display = 'none'; }
+
+    // --- CALENDAR & DATA ---
+    function renderCalendar() {
         const grid = document.getElementById("calendarGrid");
         grid.innerHTML = "";
-        const year = dt.getFullYear(),
-          month = dt.getMonth();
-        document.getElementById("monthDisplay").innerText =
-          `${dt.toLocaleDateString("en-US", { month: "long" })} ${year}`;
-        ["S", "M", "T", "W", "T", "F", "S"].forEach(
-          (d) =>
-            (grid.innerHTML += `<div style="font-weight:bold; font-size:0.7rem; color:var(--text-sub)">${d}</div>`),
-        );
+        const year = dt.getFullYear(), month = dt.getMonth();
+        document.getElementById("monthDisplay").innerText = `${dt.toLocaleDateString("en-US", {month:'long'})} ${year}`;
+        ['S','M','T','W','T','F','S'].forEach(d => grid.innerHTML += `<div style="font-weight:bold; font-size:0.7rem; color:var(--text-sub)">${d}</div>`);
         const firstDay = new Date(year, month, 1).getDay();
-        const days = new Date(year, month + 1, 0).getDate();
-        for (let i = 0; i < firstDay; i++) grid.innerHTML += `<div></div>`;
-        for (let i = 1; i <= days; i++) {
-          const key = `${year}-${month + 1}-${i}`;
-          const isToday =
-            i === new Date().getDate() &&
-            month === new Date().getMonth() &&
-            year === new Date().getFullYear();
-          const hasMedia =
-            data[key]?.note ||
-            (data[key]?.photos && data[key].photos.length > 0);
-          grid.innerHTML += `<div class="day ${isToday ? "today" : ""} ${key === selectedDateKey ? "selected" : ""}" onclick="selectDate('${key}')">
-                ${i}${data[key]?.mood ? `<span style="font-size:0.6rem; position:absolute; bottom:2px">${data[key].mood}</span>` : ""}
-                ${hasMedia ? `<div style="width:4px; height:4px; background:var(--primary-color); border-radius:50%; position:absolute; top:4px"></div>` : ""}
+        const days = new Date(year, month+1, 0).getDate();
+        for(let i=0; i<firstDay; i++) grid.innerHTML += `<div></div>`;
+        for(let i=1; i<=days; i++) {
+            const key = `${year}-${month+1}-${i}`;
+            const isToday = i === new Date().getDate() && month === new Date().getMonth() && year === new Date().getFullYear();
+            const hasMedia = data[key]?.note || (data[key]?.photos && data[key].photos.length > 0);
+            grid.innerHTML += `<div class="day ${isToday?'today':''} ${key===selectedDateKey?'selected':''}" onclick="selectDate('${key}')">
+                ${i}${data[key]?.mood ? `<span style="font-size:0.6rem; position:absolute; bottom:2px">${data[key].mood}</span>`:''}
+                ${hasMedia ? `<div style="width:4px; height:4px; background:var(--primary-color); border-radius:50%; position:absolute; top:4px"></div>`:''}
             </div>`;
         }
         updateStats();
-      }
+    }
 
-      function selectDate(key) {
+    function selectDate(key) {
         selectedDateKey = key;
-        document.getElementById("selected-date-text").innerText =
-          `Entry for: ${key}`;
+        document.getElementById("selected-date-text").innerText = `Entry for: ${key}`;
         document.getElementById("mood-section").style.display = "block";
         document.getElementById("add-btn").style.display = "block";
         renderGallery();
-        document.getElementById("event-list").innerHTML = data[key]?.note
-          ? `<li>📝 ${data[key].note}</li>`
-          : "<li>No notes for today.</li>";
+        document.getElementById("event-list").innerHTML = data[key]?.note ? `<li>📝 ${data[key].note}</li>` : "<li>No notes for today.</li>";
         renderCalendar();
-      }
+    }
 
-      function save() {
+    function save() {
         localStorage.setItem("diaryData", JSON.stringify(data));
         triggerSaveFlash();
         renderCalendar();
         renderGallery();
-        if (selectedDateKey) selectDate(selectedDateKey);
-      }
+        if(selectedDateKey) selectDate(selectedDateKey);
+    }
 
-      function handleImages(e) {
-        if (!selectedDateKey) return alert("Select a date first!");
+    function handleImages(e) {
+        if(!selectedDateKey) return alert("Select a date first!");
         const files = Array.from(e.target.files);
-        if (!data[selectedDateKey]) data[selectedDateKey] = { photos: [] };
-        files.forEach((file) => {
-          const reader = new FileReader();
-          reader.onload = (event) => {
-            if (!data[selectedDateKey].photos)
-              data[selectedDateKey].photos = [];
-            data[selectedDateKey].photos.push(event.target.result);
-            save();
-          };
-          reader.readAsDataURL(file);
+        if(!data[selectedDateKey]) data[selectedDateKey] = { photos: [] };
+        files.forEach(file => {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                if(!data[selectedDateKey].photos) data[selectedDateKey].photos = [];
+                data[selectedDateKey].photos.push(event.target.result);
+                save();
+            };
+            reader.readAsDataURL(file);
         });
-      }
+    }
 
-      function renderGallery() {
+    function renderGallery() {
         const gallery = document.getElementById("photo-gallery");
         gallery.innerHTML = "";
         const photos = data[selectedDateKey]?.photos || [];
-        document.getElementById("no-photo-text").style.display = photos.length
-          ? "none"
-          : "block";
+        document.getElementById("no-photo-text").style.display = photos.length ? "none" : "block";
         photos.forEach((src, index) => {
-          const container = document.createElement("div");
-          container.className = "gallery-item";
-          container.innerHTML = `<img src="${src}" class="gallery-img" onclick="window.open().document.write('<img src=\\'${src}\\'>')"><button class="del-img" onclick="removeImage(${index})">×</button>`;
-          gallery.appendChild(container);
+            const container = document.createElement('div');
+            container.className = 'gallery-item';
+            container.innerHTML = `<img src="${src}" class="gallery-img" onclick="window.open().document.write('<img src=\\'${src}\\'>')"><button class="del-img" onclick="removeImage(${index})">×</button>`;
+            gallery.appendChild(container);
         });
-      }
+    }
 
-      function removeImage(index) {
-        data[selectedDateKey].photos.splice(index, 1);
-        save();
-      }
+    function removeImage(index) { data[selectedDateKey].photos.splice(index, 1); save(); }
 
-      function updateStats() {
-        const grid = document.getElementById("statsGrid");
-        const summary = document.getElementById("mood-summary");
-        const year = dt.getFullYear(),
-          month = dt.getMonth() + 1;
-        let counts = { "😊": 0, "🤩": 0, "😐": 0, "😢": 0, "😴": 0 },
-          total = 0;
+    function updateStats() {
+        const grid = document.getElementById('statsGrid');
+        const summary = document.getElementById('mood-summary');
+        const year = dt.getFullYear(), month = dt.getMonth() + 1;
+        let counts = { '😊':0, '🤩':0, '😐':0, '😢':0, '😴':0 }, total = 0;
         for (let key in data) {
-          const [y, m] = key.split("-").map(Number);
-          if (y === year && m === month && data[key].mood) {
-            counts[data[key].mood]++;
-            total++;
-          }
+            const [y, m] = key.split('-').map(Number);
+            if (y === year && m === month && data[key].mood) { counts[data[key].mood]++; total++; }
         }
-        grid.innerHTML = Object.keys(counts)
-          .map(
-            (e) =>
-              `<div class="stat-box"><div>${e}</div><strong>${counts[e]}</strong></div>`,
-          )
-          .join("");
+        grid.innerHTML = Object.keys(counts).map(e => `<div class="stat-box"><div>${e}</div><strong>${counts[e]}</strong></div>`).join('');
         if (total === 0) summary.innerText = "No moods this month.";
         else {
-          const maxVal = Math.max(...Object.values(counts));
-          const topMood = Object.keys(counts).find(
-            (key) => counts[key] === maxVal,
-          );
-          summary.innerText = "Monthly vibe: " + topMood;
+            const maxVal = Math.max(...Object.values(counts));
+            const topMood = Object.keys(counts).find(key => counts[key] === maxVal);
+            summary.innerText = "Monthly vibe: " + topMood;
         }
-      }
+    }
 
-      function addNote() {
+    function addNote() {
         const entry = prompt("Thoughts:", data[selectedDateKey]?.note || "");
-        if (entry !== null) {
-          if (!data[selectedDateKey]) data[selectedDateKey] = {};
-          data[selectedDateKey].note = entry.trim();
-          save();
+        if(entry !== null) {
+            if(!data[selectedDateKey]) data[selectedDateKey] = {};
+            data[selectedDateKey].note = entry.trim();
+            save();
         }
-      }
+    }
 
-      function setMood(emoji) {
-        if (!data[selectedDateKey]) data[selectedDateKey] = {};
-        data[selectedDateKey].mood = emoji;
-        save();
-      }
-      function clearMood() {
-        if (data[selectedDateKey]?.mood) {
-          delete data[selectedDateKey].mood;
-          save();
-        }
-      }
-      function changeMonth(dir) {
-        dt.setMonth(dt.getMonth() + dir);
-        renderCalendar();
-      }
-      function triggerSaveFlash() {
-        const ind = document.getElementById("save-indicator");
-        ind.style.opacity = "1";
-        setTimeout(() => (ind.style.opacity = "0"), 1500);
-      }
-      function exportData() {
-        const blob = new Blob([JSON.stringify(data)], {
-          type: "application/json",
-        });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `diary-backup.json`;
-        a.click();
-      }
-      function clearAllData() {
-        if (confirm("DANGER: Delete everything?")) {
-          localStorage.clear();
-          location.reload();
-        }
-      }
-
-      // Search
-      function searchEntries() {
-        const term = document.getElementById("search-bar").value.toLowerCase();
+    function setMood(emoji) { if(!data[selectedDateKey]) data[selectedDateKey] = {}; data[selectedDateKey].mood = emoji; save(); }
+    function clearMood() { if (data[selectedDateKey]?.mood) { delete data[selectedDateKey].mood; save(); } }
+    function changeMonth(dir) { dt.setMonth(dt.getMonth()+dir); renderCalendar(); }
+    function triggerSaveFlash() { const ind = document.getElementById('save-indicator'); ind.style.opacity = '1'; setTimeout(() => ind.style.opacity = '0', 1500); }
+    function exportData() { const blob = new Blob([JSON.stringify(data)], {type:"application/json"}); const url = URL.createObjectURL(blob); const a = document.createElement("a"); a.href = url; a.download = `diary-backup.json`; a.click(); }
+    function clearAllData() { if(confirm("DANGER: Delete everything?")) { localStorage.clear(); location.reload(); } }
+    
+    function searchEntries() {
+        const term = document.getElementById('search-bar').value.toLowerCase();
         if (!term) return;
         for (let key in data) {
-          if (data[key].note && data[key].note.toLowerCase().includes(term)) {
-            const [y, m, d] = key.split("-").map(Number);
-            dt = new Date(y, m - 1, 1);
-            selectedDateKey = key;
-            renderCalendar();
-            selectDate(key);
-            break;
-          }
+            if (data[key].note && data[key].note.toLowerCase().includes(term)) {
+                const [y, m, d] = key.split('-').map(Number);
+                dt = new Date(y, m - 1, 1);
+                selectedDateKey = key;
+                renderCalendar();
+                selectDate(key);
+                break;
+            }
         }
-      }
+    }
 
-      // Init
-      if (localStorage.getItem("darkMode") === "enabled")
-        document.body.classList.add("dark-mode");
-      document.getElementById("dark-toggle").onclick = () => {
-        document.body.classList.toggle("dark-mode");
-        localStorage.setItem(
-          "darkMode",
-          document.body.classList.contains("dark-mode")
-            ? "enabled"
-            : "disabled",
-        );
-      };
-      if (localStorage.getItem("diaryReminderTime"))
-        document.getElementById("reminder-time").value =
-          localStorage.getItem("diaryReminderTime");
-      if ("Notification" in window) updateNotifStatus(Notification.permission);
+    // --- INITIALIZATION ---
+    if(localStorage.getItem('darkMode') === 'enabled') document.body.classList.add('dark-mode');
+    document.getElementById('dark-toggle').onclick = () => {
+        document.body.classList.toggle('dark-mode');
+        localStorage.setItem('darkMode', document.body.classList.contains('dark-mode') ? 'enabled' : 'disabled');
+    };
+    if(localStorage.getItem('diaryReminderTime')) document.getElementById('reminder-time').value = localStorage.getItem('diaryReminderTime');
+    if ("Notification" in window) updateNotifStatus(Notification.permission);
+    document.getElementById('colorPicker').oninput = (e) => document.documentElement.style.setProperty('--primary-color', e.target.value);
+    
+    const quotes = ["Create your own sunshine.", "Potential is endless.", "Gifts in every day."];
+    document.getElementById('quote-text').innerText = quotes[new Date().getDate() % quotes.length];
 
-      document.getElementById("colorPicker").oninput = (e) =>
-        document.documentElement.style.setProperty(
-          "--primary-color",
-          e.target.value,
-        );
-
-      const quotes = [
-        "Create your own sunshine.",
-        "Potential is endless.",
-        "Gifts in every day.",
-      ];
-      document.getElementById("quote-text").innerText =
-        quotes[new Date().getDate() % quotes.length];
-
-      renderCalendar();
+    renderCalendar();
+    updateClock();
     </script>
   </body>
 </html>
+
 
