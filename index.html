@@ -685,13 +685,13 @@
     let idleTimer;
     function resetIdleTimer() {
         clearTimeout(idleTimer);
-        // 300,000 milliseconds = 5 minutes
+        // 30,000 milliseconds = 30 seconds
         idleTimer = setTimeout(() => {
             if (!document.getElementById('lock-screen').style.display || 
                  document.getElementById('lock-screen').style.display === 'none') {
                 location.reload(); // Hard lock by refreshing
             }
-        }, 300000); 
+        }, 30000); 
     }
 
     // Listen for any activity to reset the timer
@@ -935,5 +935,6 @@
     </script>
   </body>
 </html>
+
 
 
