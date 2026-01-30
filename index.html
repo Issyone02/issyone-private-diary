@@ -675,56 +675,51 @@
     <button id="clear-btn" onclick="clearAllData()">⚠️ Clear All Data</button>
 
     <script>
-      let dt = new Date();
+     <script>
+    let dt = new Date();
     let data = JSON.parse(localStorage.getItem("diaryData")) || {};
     let selectedDateKey = null;
     let savedPin = localStorage.getItem("diaryPin");
     let isAnalog = false;
 
-    // --- AUTO-LOCK LOGIC ---
     // --- AUTO-LOCK LOGIC WITH WARNING ---
     let idleTimer;
     let warningTimer;
     const idleLimit = 30000; // 30 seconds total
     const warningTime = 10000; // 10 seconds warning
 
-    // Create the warning element dynamically
+    // Create the warning element
     const lockWarning = document.createElement('div');
     lockWarning.id = 'lock-warning';
     lockWarning.style = "position:fixed; bottom:20px; right:20px; background:var(--danger); color:white; padding:12px 20px; border-radius:15px; font-weight:bold; box-shadow:0 10px 20px rgba(0,0,0,0.3); display:none; z-index:10000; animation: pulse 1s infinite;";
     lockWarning.innerHTML = "⚠️ Locking in 10s... Move to stay!";
     document.body.appendChild(lockWarning);
 
-    // Add CSS pulse animation for the warning
-    const style = document.createElement('style');
-    style.innerHTML = "@keyframes pulse { 0% {transform:scale(1);} 50% {transform:scale(1.05);} 100% {transform:scale(1);} }";
-    document.head.appendChild(style);
-
-    function resetIdleTimer() {
-        // Hide warning and clear both timers
-        lockWarning.style.display = 'none';
-        clearTimeout(idleTimer);
-        clearTimeout(warningTimer);
-
-        // Timer to show the warning 10s before lock
-        warningTimer = setTimeout(() => {
-            if (isUnlocked()) {
-                lockWarning.style.display = 'block';
-                startCountdown(10);
-            }
-        }, idleLimit - warningTime);
-
-        // Timer for the actual lock
-        idleTimer = setTimeout(() => {
-            if (isUnlocked()) {
-                location.reload(); 
-            }
-        }, idleLimit);
-    }
+    // Add CSS pulse animation
+    const styleElem = document.createElement('style');
+    styleElem.innerHTML = "@keyframes pulse { 0% {transform:scale(1);} 50% {transform:scale(1.05);} 100% {transform:scale(1);} }";
+    document.head.appendChild(styleElem);
 
     function isUnlocked() {
         const lock = document.getElementById('lock-screen');
         return !lock || lock.style.display === 'none';
+    }
+
+    function resetIdleTimer() {
+        lockWarning.style.display = 'none';
+        clearTimeout(idleTimer);
+        clearTimeout(warningTimer);
+
+        if (isUnlocked()) {
+            warningTimer = setTimeout(() => {
+                lockWarning.style.display = 'block';
+                startCountdown(10);
+            }, idleLimit - warningTime);
+
+            idleTimer = setTimeout(() => {
+                location.reload(); 
+            }, idleLimit);
+        }
     }
 
     function startCountdown(seconds) {
@@ -736,15 +731,14 @@
         }, 1000);
     }
 
-    // Event listeners to detect activity
+    // Event listeners
     window.onload = resetIdleTimer;
     window.onmousemove = resetIdleTimer;
     window.onmousedown = resetIdleTimer; 
     window.ontouchstart = resetIdleTimer;
     window.onkeypress = resetIdleTimer;
-    window.onscroll = resetIdleTimer;
 
-    // --- REMINDER LOGIC ---
+    // --- REMINDER & NOTIFICATION ---
     function saveReminderTime() {
         const timeValue = document.getElementById('reminder-time').value;
         localStorage.setItem("diaryReminderTime", timeValue);
@@ -759,30 +753,16 @@
         Notification.requestPermission().then(permission => {
             updateNotifStatus(permission);
             if (permission === "granted") {
-                try {
-                    new Notification("Vault Security 🛡️", { 
-                        body: "Reminders are now active!",
-                        icon: "https://cdn-icons-png.flaticon.com/512/1066/1066371.png"
-                    });
-                } catch(e) {
-                    alert("Permission granted! If no pop-up appeared, check your Windows/Mac 'Do Not Disturb' settings.");
-                }
-            } else {
-                alert("Permission " + permission + ". Click the Lock icon in the URL bar to reset.");
+                new Notification("Vault Security 🛡️", { body: "Reminders are now active!" });
             }
         });
     }
 
     function updateNotifStatus(perm) {
         const statusText = document.getElementById('notif-status');
-        if (perm === "granted") {
-            statusText.innerText = "Permission: Active ✅";
-            statusText.style.color = "var(--success)";
-        } else if (perm === "denied") {
-            statusText.innerText = "Permission: Blocked ❌";
-            statusText.style.color = "var(--danger)";
-        } else {
-            statusText.innerText = "Permission: Not Set ⚠️";
+        if (statusText) {
+            statusText.innerText = perm === "granted" ? "Permission: Active ✅" : perm === "denied" ? "Permission: Blocked ❌" : "Permission: Not Set ⚠️";
+            statusText.style.color = perm === "granted" ? "var(--success)" : "var(--danger)";
         }
     }
 
@@ -793,21 +773,22 @@
         const currentTime = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
         if (currentTime === savedTime) {
             const todayKey = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
-            if (!data[todayKey] || (!data[todayKey].note && (!data[todayKey].photos || data[todayKey].photos.length === 0))) {
-                new Notification("Diary Reminder 📖", { body: "You haven't recorded anything today!" });
+            if (!data[todayKey] || !data[todayKey].note) {
+                new Notification("Diary Reminder 📖", { body: "Take a moment to write today's entry!" });
             }
         }
     }
     setInterval(checkReminder, 60000);
 
-    // --- CLOCK LOGIC ---
+    // --- CLOCK & UI ---
     function updateClock() {
         const now = new Date();
         const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-        document.getElementById('clock-day').innerText = days[now.getDay()];
-        document.getElementById('clock-time').innerText = now.toLocaleTimeString();
-        const s = now.getSeconds(), m = now.getMinutes(), h = now.getHours();
+        if (document.getElementById('clock-day')) document.getElementById('clock-day').innerText = days[now.getDay()];
+        if (document.getElementById('clock-time')) document.getElementById('clock-time').innerText = now.toLocaleTimeString();
+        
         if(isAnalog){
+            const s = now.getSeconds(), m = now.getMinutes(), h = now.getHours();
             document.getElementById('s-hand').style.transform = `rotate(${s * 6}deg)`;
             document.getElementById('m-hand').style.transform = `rotate(${m * 6}deg)`;
             document.getElementById('h-hand').style.transform = `rotate(${h * 30 + m / 2}deg)`;
@@ -838,11 +819,15 @@
             }
         }
     }
-    function unlockDiary() { document.getElementById('lock-screen').style.display = 'none'; }
+    function unlockDiary() { 
+        document.getElementById('lock-screen').style.display = 'none';
+        resetIdleTimer(); // Start the 30s timer only after unlocking
+    }
 
     // --- CALENDAR & DATA ---
     function renderCalendar() {
         const grid = document.getElementById("calendarGrid");
+        if (!grid) return;
         grid.innerHTML = "";
         const year = dt.getFullYear(), month = dt.getMonth();
         document.getElementById("monthDisplay").innerText = `${dt.toLocaleDateString("en-US", {month:'long'})} ${year}`;
@@ -883,10 +868,10 @@
     function handleImages(e) {
         if(!selectedDateKey) return alert("Select a date first!");
         const files = Array.from(e.target.files);
-        if(!data[selectedDateKey]) data[selectedDateKey] = { photos: [] };
         files.forEach(file => {
             const reader = new FileReader();
             reader.onload = (event) => {
+                if(!data[selectedDateKey]) data[selectedDateKey] = { photos: [] };
                 if(!data[selectedDateKey].photos) data[selectedDateKey].photos = [];
                 data[selectedDateKey].photos.push(event.target.result);
                 save();
@@ -897,8 +882,8 @@
 
     function renderGallery() {
         const gallery = document.getElementById("photo-gallery");
-        gallery.innerHTML = "";
         const photos = data[selectedDateKey]?.photos || [];
+        gallery.innerHTML = "";
         document.getElementById("no-photo-text").style.display = photos.length ? "none" : "block";
         photos.forEach((src, index) => {
             const container = document.createElement('div');
@@ -919,13 +904,8 @@
             const [y, m] = key.split('-').map(Number);
             if (y === year && m === month && data[key].mood) { counts[data[key].mood]++; total++; }
         }
-        grid.innerHTML = Object.keys(counts).map(e => `<div class="stat-box"><div>${e}</div><strong>${counts[e]}</strong></div>`).join('');
-        if (total === 0) summary.innerText = "No moods this month.";
-        else {
-            const maxVal = Math.max(...Object.values(counts));
-            const topMood = Object.keys(counts).find(key => counts[key] === maxVal);
-            summary.innerText = "Monthly vibe: " + topMood;
-        }
+        if(grid) grid.innerHTML = Object.keys(counts).map(e => `<div class="stat-box"><div>${e}</div><strong>${counts[e]}</strong></div>`).join('');
+        if(summary) summary.innerText = total === 0 ? "No moods this month." : "Monthly vibe: " + Object.keys(counts).reduce((a, b) => counts[a] > counts[b] ? a : b);
     }
 
     function addNote() {
@@ -940,10 +920,10 @@
     function setMood(emoji) { if(!data[selectedDateKey]) data[selectedDateKey] = {}; data[selectedDateKey].mood = emoji; save(); }
     function clearMood() { if (data[selectedDateKey]?.mood) { delete data[selectedDateKey].mood; save(); } }
     function changeMonth(dir) { dt.setMonth(dt.getMonth()+dir); renderCalendar(); }
-    function triggerSaveFlash() { const ind = document.getElementById('save-indicator'); ind.style.opacity = '1'; setTimeout(() => ind.style.opacity = '0', 1500); }
+    function triggerSaveFlash() { const ind = document.getElementById('save-indicator'); if(ind){ ind.style.opacity = '1'; setTimeout(() => ind.style.opacity = '0', 1500); } }
     function exportData() { const blob = new Blob([JSON.stringify(data)], {type:"application/json"}); const url = URL.createObjectURL(blob); const a = document.createElement("a"); a.href = url; a.download = `diary-backup.json`; a.click(); }
     function clearAllData() { if(confirm("DANGER: Delete everything?")) { localStorage.clear(); location.reload(); } }
-    
+
     function searchEntries() {
         const term = document.getElementById('search-bar').value.toLowerCase();
         if (!term) return;
@@ -965,42 +945,27 @@
         document.body.classList.toggle('dark-mode');
         localStorage.setItem('darkMode', document.body.classList.contains('dark-mode') ? 'enabled' : 'disabled');
     };
+    
     if(localStorage.getItem('diaryReminderTime')) document.getElementById('reminder-time').value = localStorage.getItem('diaryReminderTime');
     if ("Notification" in window) updateNotifStatus(Notification.permission);
     document.getElementById('colorPicker').oninput = (e) => document.documentElement.style.setProperty('--primary-color', e.target.value);
     
+    // CUSTOM QUOTES - Change these as you like!
     const quotes = [
-          "Don't be pushed around by the fears in your mind. Be led by the dreams in your heart.",
-          "Your potential is endless.",
-          "Every day provides its own gifts.",
-          "Believe you can and you're halfway there.",
-          "Do something today that your future self will thank you for.",
-          "Happiness is not by chance, but by choice.",
-          "The only limit to our realization of tomorrow is our doubts of today.",
-          "Start where you are. Use what you have. Do what you can.",
-          "Dream big and dare to fail.",
-          "Act as if what you do makes a difference. It does.",
-          "The secret of getting ahead is getting started — Mark Twain.",
-          "Do not count the days rather make the days count — Muhammad Ali.",
-          "Everything you’ve ever wanted is on the other side of fear — George Addair.",
-          "Your talent determines what you can do. Your motivation determines how much you are willing to do — Lou Holtz.",
-          "Happiness is not something readymade. It comes from your own actions — Dalai Lama.",
-          "Believe you can and you're halfway there.",
-          "Keep your face always toward the sunshine—and shadows will fall behind you — Walt Whitman.",
-          "The only limit to our realization of tomorrow will be our doubts of today.",
-          "The future belongs to those who believe in the beauty of their dreams — Eleanor Roosevelt.",
-          "Do not wait to strike till the iron is hot; but make it hot by striking — William Butler Yeats.",
-          "The best way to predict the future is to create it.",
-          "Everything you can imagine is real — Pablo Picasso.",
-          "What lies behind us and what lies before us are tiny matters compared to what lies within us.",
-          document.getElementById('quote-text').innerText = quotes[new Date().getDate() % quotes.length
-      ];
+        "Create your own sunshine.", 
+        "Your story matters.", 
+        "Believe in your potential.",
+        "Add your custom message here!"
+    ];
+    document.getElementById('quote-text').innerText = quotes.join(" --- ");
 
     renderCalendar();
     updateClock();
+</script>
     </script>
   </body>
 </html>
+
 
 
 
