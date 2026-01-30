@@ -682,25 +682,67 @@
     let isAnalog = false;
 
     // --- AUTO-LOCK LOGIC ---
+    // --- AUTO-LOCK LOGIC WITH WARNING ---
     let idleTimer;
+    let warningTimer;
+    const idleLimit = 30000; // 30 seconds total
+    const warningTime = 10000; // 10 seconds warning
+
+    // Create the warning element dynamically
+    const lockWarning = document.createElement('div');
+    lockWarning.id = 'lock-warning';
+    lockWarning.style = "position:fixed; bottom:20px; right:20px; background:var(--danger); color:white; padding:12px 20px; border-radius:15px; font-weight:bold; box-shadow:0 10px 20px rgba(0,0,0,0.3); display:none; z-index:10000; animation: pulse 1s infinite;";
+    lockWarning.innerHTML = "⚠️ Locking in 10s... Move to stay!";
+    document.body.appendChild(lockWarning);
+
+    // Add CSS pulse animation for the warning
+    const style = document.createElement('style');
+    style.innerHTML = "@keyframes pulse { 0% {transform:scale(1);} 50% {transform:scale(1.05);} 100% {transform:scale(1);} }";
+    document.head.appendChild(style);
+
     function resetIdleTimer() {
+        // Hide warning and clear both timers
+        lockWarning.style.display = 'none';
         clearTimeout(idleTimer);
-        // 30,000 milliseconds = 30 seconds
-        idleTimer = setTimeout(() => {
-            if (!document.getElementById('lock-screen').style.display || 
-                 document.getElementById('lock-screen').style.display === 'none') {
-                location.reload(); // Hard lock by refreshing
+        clearTimeout(warningTimer);
+
+        // Timer to show the warning 10s before lock
+        warningTimer = setTimeout(() => {
+            if (isUnlocked()) {
+                lockWarning.style.display = 'block';
+                startCountdown(10);
             }
-        }, 30000); 
+        }, idleLimit - warningTime);
+
+        // Timer for the actual lock
+        idleTimer = setTimeout(() => {
+            if (isUnlocked()) {
+                location.reload(); 
+            }
+        }, idleLimit);
     }
 
-    // Listen for any activity to reset the timer
+    function isUnlocked() {
+        const lock = document.getElementById('lock-screen');
+        return !lock || lock.style.display === 'none';
+    }
+
+    function startCountdown(seconds) {
+        let count = seconds;
+        const interval = setInterval(() => {
+            count--;
+            lockWarning.innerHTML = `⚠️ Locking in ${count}s... Move to stay!`;
+            if (count <= 0 || lockWarning.style.display === 'none') clearInterval(interval);
+        }, 1000);
+    }
+
+    // Event listeners to detect activity
     window.onload = resetIdleTimer;
     window.onmousemove = resetIdleTimer;
     window.onmousedown = resetIdleTimer; 
     window.ontouchstart = resetIdleTimer;
-    window.onclick = resetIdleTimer;
     window.onkeypress = resetIdleTimer;
+    window.onscroll = resetIdleTimer;
 
     // --- REMINDER LOGIC ---
     function saveReminderTime() {
@@ -935,6 +977,7 @@
     </script>
   </body>
 </html>
+
 
 
 
