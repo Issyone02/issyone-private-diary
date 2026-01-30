@@ -969,7 +969,30 @@
     if ("Notification" in window) updateNotifStatus(Notification.permission);
     document.getElementById('colorPicker').oninput = (e) => document.documentElement.style.setProperty('--primary-color', e.target.value);
     
-    const quotes = ["Create your own sunshine.", "Potential is endless.", "Gifts in every day."];
+    const quotes = [
+      "Don't be pushed around by the fears in your mind. Be led by the dreams in your heart.",
+          "Your potential is endless.",
+          "Every day provides its own gifts.",
+          "Believe you can and you're halfway there.",
+          "Do something today that your future self will thank you for.",
+          "Happiness is not by chance, but by choice.",
+          "The only limit to our realization of tomorrow is our doubts of today.",
+          "Start where you are. Use what you have. Do what you can.",
+          "Dream big and dare to fail.",
+          "Act as if what you do makes a difference. It does.",
+          "The secret of getting ahead is getting started — Mark Twain.",
+          "Do not count the days rather make the days count — Muhammad Ali.",
+          "Everything you’ve ever wanted is on the other side of fear — George Addair.",
+          "Your talent determines what you can do. Your motivation determines how much you are willing to do — Lou Holtz.",
+          "Happiness is not something readymade. It comes from your own actions — Dalai Lama.",
+          "Believe you can and you're halfway there.",
+          "Keep your face always toward the sunshine—and shadows will fall behind you — Walt Whitman.",
+          "The only limit to our realization of tomorrow will be our doubts of today.",
+          "The future belongs to those who believe in the beauty of their dreams — Eleanor Roosevelt.",
+          "Do not wait to strike till the iron is hot; but make it hot by striking — William Butler Yeats.",
+          "The best way to predict the future is to create it.",
+          "Everything you can imagine is real — Pablo Picasso.",
+          "What lies behind us and what lies before us are tiny matters compared to what lies within us.",
     document.getElementById('quote-text').innerText = quotes[new Date().getDate() % quotes.length];
 
     renderCalendar();
@@ -977,6 +1000,7 @@
     </script>
   </body>
 </html>
+
 
 
 
