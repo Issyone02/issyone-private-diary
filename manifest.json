@@ -1,0 +1,20 @@
+{
+  "name": "My Daily Diary Vault",
+  "short_name": "Diary",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#764ba2",
+  "theme_color": "#764ba2",
+  "icons": [
+    {
+      "src": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR06t80E2xh2NMm7wzl4TSsyYT_AfFWBA4VIw&s",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR06t80E2xh2NMm7wzl4TSsyYT_AfFWBA4VIw&s",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>My Daily Diary Vault</title>
+    <link rel="manifest" href="./manifest.json" />
     <style>
       :root {
         --primary-color: #764ba2;
@@ -44,6 +45,7 @@
         transition: all 0.3s ease;
       }
 
+      /* Widgets */
       #time-widget-container {
         position: absolute;
         top: 60px;
@@ -55,7 +57,6 @@
       #time-widget-container:hover {
         transform: scale(1.05);
       }
-
       .digital-clock {
         background: rgba(0, 0, 0, 0.3);
         color: white;
@@ -63,7 +64,7 @@
         border-radius: 15px;
         backdrop-filter: blur(5px);
         text-align: right;
-        font-family: "Courier New", Courier, monospace;
+        font-family: "Courier New", monospace;
         border: 1px solid rgba(255, 255, 255, 0.1);
       }
       .digital-day {
@@ -76,7 +77,6 @@
         font-size: 1.2rem;
         font-weight: bold;
       }
-
       .analog-clock {
         width: 80px;
         height: 80px;
@@ -122,6 +122,7 @@
         z-index: 4;
       }
 
+      /* Lock Screen & Security */
       #lock-screen {
         position: fixed;
         top: 0;
@@ -156,6 +157,19 @@
         outline: none;
         color: var(--primary-color);
       }
+      #forgot-link {
+        margin-top: 15px;
+        font-size: 0.75rem;
+        cursor: pointer;
+        text-decoration: underline;
+        opacity: 0.7;
+        transition: 0.3s;
+      }
+      #forgot-link:hover {
+        opacity: 1;
+      }
+
+      /* UI Components */
       #save-indicator {
         position: fixed;
         top: 20px;
@@ -195,40 +209,14 @@
           transform: translate(-100%, 0);
         }
       }
-      .main-title {
-        color: white;
-        font-size: 2.2rem;
-        font-weight: 800;
-        margin-bottom: 10px;
-      }
 
-      #search-container {
-        width: 100%;
-        max-width: 400px;
-        margin-bottom: 15px;
-      }
-      #search-bar {
-        width: 100%;
-        padding: 12px 20px;
-        border-radius: 25px;
-        border: none;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        outline: none;
+      .card {
         background: var(--card-bg);
+        padding: 20px;
+        border-radius: 20px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         color: var(--text-main);
-      }
-      #controls {
-        background: var(--card-bg);
-        padding: 10px 20px;
-        border-radius: 50px;
-        margin-bottom: 20px;
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: center;
-        gap: 15px;
-        color: var(--text-main);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        text-align: center;
       }
       .page-wrapper {
         display: flex;
@@ -246,98 +234,6 @@
         flex-direction: column;
         gap: 20px;
       }
-      .card {
-        background: var(--card-bg);
-        padding: 20px;
-        border-radius: 20px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        color: var(--text-main);
-        text-align: center;
-      }
-
-      .photo-gallery {
-        display: flex;
-        gap: 10px;
-        overflow-x: auto;
-        padding: 10px 0;
-        scroll-snap-type: x mandatory;
-        margin-bottom: 10px;
-        min-height: 50px;
-      }
-      .gallery-item {
-        position: relative;
-        flex: 0 0 120px;
-        height: 120px;
-        scroll-snap-align: start;
-      }
-      .gallery-img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        border-radius: 12px;
-        border: 2px solid var(--primary-color);
-        cursor: pointer;
-      }
-      .del-img {
-        position: absolute;
-        top: 5px;
-        right: 5px;
-        background: var(--danger);
-        color: white;
-        border: none;
-        border-radius: 50%;
-        width: 22px;
-        height: 22px;
-        font-size: 12px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(5, 1fr);
-        gap: 5px;
-        margin-top: 10px;
-      }
-      .stat-box {
-        font-size: 0.8rem;
-        text-align: center;
-        color: var(--text-sub);
-      }
-      #mood-summary {
-        font-size: 0.85rem;
-        margin-top: 12px;
-        font-style: italic;
-        color: var(--primary-color);
-        border-top: 1px dashed var(--border);
-        padding-top: 8px;
-      }
-
-      .reminder-setting {
-        margin-top: 15px;
-        padding-top: 15px;
-        border-top: 1px dashed var(--border);
-        text-align: left;
-      }
-      .reminder-setting label {
-        font-size: 0.8rem;
-        font-weight: bold;
-        color: var(--text-sub);
-      }
-      .reminder-input {
-        width: 100%;
-        border: 1px solid var(--border);
-        border-radius: 10px;
-        padding: 8px;
-        margin-top: 5px;
-        outline: none;
-        background: var(--card-bg);
-        color: var(--text-main);
-        box-sizing: border-box;
-      }
-
       #calendar-container {
         flex: 1.2;
         min-width: 320px;
@@ -348,6 +244,7 @@
         box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
         color: var(--text-main);
       }
+
       .calendar-grid {
         display: grid;
         grid-template-columns: repeat(7, 1fr);
@@ -355,7 +252,7 @@
         text-align: center;
       }
       .day {
-        aspect-ratio: 1 / 1;
+        aspect-ratio: 1/1;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -400,12 +297,7 @@
         font-size: 0.8rem;
         margin: 0;
       }
-      .btn-backup {
-        background: var(--info);
-      }
-      .btn-restore {
-        background: var(--success);
-      }
+
       #clear-btn {
         margin: 40px 0;
         background: rgba(255, 71, 87, 0.1);
@@ -421,12 +313,67 @@
         color: white;
         transform: scale(1.05);
       }
+
+      #event-list {
+        list-style: none;
+        padding: 0;
+        margin: 10px 0;
+        font-size: 0.95rem;
+        text-align: left;
+      }
+      #note-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 2000;
+        backdrop-filter: blur(5px);
+        align-items: center;
+        justify-content: center;
+      }
+
+      .photo-gallery {
+        display: flex;
+        gap: 10px;
+        overflow-x: auto;
+        padding: 10px 0;
+        scroll-snap-type: x mandatory;
+        margin-bottom: 10px;
+        min-height: 50px;
+      }
+      .gallery-item {
+        position: relative;
+        flex: 0 0 120px;
+        height: 120px;
+      }
+      .gallery-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 12px;
+        border: 2px solid var(--primary-color);
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
     </style>
   </head>
   <body>
     <div id="lock-screen">
       <div class="pin-box">
-        <h2 id="lock-msg">Set Your Diary PIN</h2>
+        <h2 id="lock-msg">Enter Vault PIN</h2>
         <p style="font-size: 0.8rem; opacity: 0.8">Secure your memories</p>
         <input
           type="password"
@@ -435,12 +382,15 @@
           placeholder="****"
           oninput="validatePin()"
         />
+        <div id="forgot-link" style="display: none" onclick="recoverPin()">
+          Forgot PIN?
+        </div>
       </div>
     </div>
 
     <div id="save-indicator">✓ Saved</div>
     <div id="quote-ticker">
-      <div class="scrolling-text" id="quote-text">Loading inspiration...</div>
+      <div class="scrolling-text" id="quote-text">Loading...</div>
     </div>
 
     <div id="time-widget-container" onclick="toggleClockMode()">
@@ -456,28 +406,88 @@
       </div>
     </div>
 
-    <h1 class="main-title">My Daily Diary</h1>
+    <h1 style="color: white; font-weight: 800; margin-bottom: 10px">
+      My Daily Diary
+    </h1>
 
-    <div id="search-container">
+    <div
+      id="search-container"
+      style="width: 100%; max-width: 400px; margin-bottom: 15px"
+    >
       <input
         type="text"
         id="search-bar"
         placeholder="🔍 Search entries..."
         oninput="searchEntries()"
+        style="
+          width: 100%;
+          padding: 12px 20px;
+          border-radius: 25px;
+          border: none;
+          box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+          background: var(--card-bg);
+          color: var(--text-main);
+          outline: none;
+        "
       />
     </div>
 
-    <div id="controls">
+    <div
+      id="controls"
+      style="
+        background: var(--card-bg);
+        padding: 10px 20px;
+        border-radius: 50px;
+        margin-bottom: 20px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+        color: var(--text-main);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      "
+    >
       <button id="dark-toggle" class="btn btn-small">🌓 Mode</button>
-      <button onclick="exportData()" class="btn btn-small btn-backup">
+
+      <button
+        onclick="manualLock()"
+        class="btn btn-small"
+        style="background: var(--info)"
+      >
+        🔒 Lock
+      </button>
+
+      <button
+        onclick="changePin()"
+        class="btn btn-small"
+        style="background: var(--accent)"
+      >
+        🔑 Change PIN
+      </button>
+      <button
+        onclick="exportData()"
+        class="btn btn-small"
+        style="background: var(--info)"
+      >
         💾 Backup
       </button>
       <button
         onclick="document.getElementById('import-input').click()"
-        class="btn btn-small btn-restore"
+        class="btn btn-small"
+        style="background: var(--success)"
       >
         📂 Restore
       </button>
+
+      <button
+        onclick="debugVault()"
+        class="btn btn-small"
+        style="background: #636e72"
+      >
+        🔍 Check Stats
+      </button>
+
       <input
         type="file"
         id="import-input"
@@ -496,6 +506,12 @@
           cursor: pointer;
           background: none;
         "
+        oninput="
+          document.documentElement.style.setProperty(
+            '--primary-color',
+            this.value,
+          )
+        "
       />
     </div>
 
@@ -504,9 +520,14 @@
         <div class="card">
           <h3>Gallery</h3>
           <div id="photo-gallery" class="photo-gallery"></div>
-          <p id="no-photo-text">No photos for this date.</p>
+          <p
+            id="no-photo-text"
+            style="font-size: 0.8rem; color: var(--text-sub)"
+          >
+            No photos for this date.
+          </p>
           <label for="photo-input" class="btn" style="display: block"
-            >📷 Add Photo</label
+            >📷 Add Photo (s)</label
           >
           <input
             type="file"
@@ -522,24 +543,66 @@
           <p style="margin: 0; font-weight: bold; font-size: 0.9rem">
             Monthly Mood Tracker
           </p>
-          <div class="stats-grid" id="statsGrid"></div>
-          <div id="mood-summary">Record moods to see your summary!</div>
+          <div
+            id="statsGrid"
+            style="
+              display: grid;
+              grid-template-columns: repeat(5, 1fr);
+              gap: 5px;
+              margin-top: 10px;
+            "
+          ></div>
+          <div
+            id="mood-summary"
+            style="
+              font-size: 0.85rem;
+              margin-top: 12px;
+              font-style: italic;
+              color: var(--primary-color);
+              border-top: 1px dashed var(--border);
+              padding-top: 8px;
+            "
+          >
+            Record moods!
+          </div>
 
-          <div class="reminder-setting">
-            <label>🔔 Entry Reminder Time</label>
+          <div
+            style="
+              margin-top: 15px;
+              padding-top: 15px;
+              border-top: 1px dashed var(--border);
+              text-align: left;
+            "
+          >
+            <label
+              style="
+                font-size: 0.8rem;
+                font-weight: bold;
+                color: var(--text-sub);
+              "
+              >🔔 Entry Reminder</label
+            >
             <div style="display: flex; gap: 5px; margin-top: 5px">
               <input
                 type="time"
                 id="reminder-time"
-                class="reminder-input"
                 onchange="saveReminderTime()"
+                style="
+                  flex: 1;
+                  border: 1px solid var(--border);
+                  border-radius: 10px;
+                  padding: 8px;
+                  outline: none;
+                  background: var(--card-bg);
+                  color: var(--text-main);
+                "
               />
               <button
                 onclick="requestNotificationPermission()"
                 class="btn btn-small"
                 style="margin: 0; font-size: 0.6rem"
               >
-                🔔 Enable
+                Enable
               </button>
             </div>
             <p
@@ -554,7 +617,6 @@
 
       <div id="calendar-container">
         <div
-          class="header"
           style="
             display: flex;
             justify-content: space-between;
@@ -588,13 +650,12 @@
             ❯
           </button>
         </div>
-
         <div class="calendar-grid" id="calendarGrid"></div>
 
         <div id="event-display" style="margin-top: 20px">
           <h3
             id="selected-date-text"
-            style="font-size: 1rem; margin-bottom: 10px"
+            style="font-size: 1rem; margin-bottom: 10px; text-align: center"
           >
             Select a date
           </h3>
@@ -651,22 +712,14 @@
               Reset Mood
             </button>
           </div>
-          <ul
-            id="event-list"
-            style="
-              list-style: none;
-              padding: 0;
-              margin: 10px 0;
-              font-size: 0.95rem;
-            "
-          ></ul>
+          <ul id="event-list"></ul>
           <button
             onclick="addNote()"
             id="add-btn"
             style="display: none"
             class="btn"
           >
-            + Write Thoughts
+            Write Notes
           </button>
         </div>
       </div>
@@ -674,324 +727,658 @@
 
     <button id="clear-btn" onclick="clearAllData()">⚠️ Clear All Data</button>
 
+    <div id="note-modal">
+      <div
+        class="card"
+        style="width: 90%; max-width: 500px; text-align: left; padding: 25px"
+      >
+        <h3 style="margin-top: 0">📝 Daily Thoughts</h3>
+        <p style="font-size: 0.8rem; color: var(--text-sub)">
+          Each new line becomes a bullet point.
+        </p>
+        <textarea
+          id="modal-textarea"
+          style="
+            width: 100%;
+            height: 200px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 15px;
+            background: var(--card-bg);
+            color: var(--text-main);
+            font-family: inherit;
+            outline: none;
+            box-sizing: border-box;
+            resize: none;
+          "
+        ></textarea>
+        <div style="display: flex; gap: 10px; margin-top: 15px">
+          <button onclick="saveModalNote()" class="btn" style="margin: 0">
+            Save Entry
+          </button>
+          <button
+            onclick="closeNoteModal()"
+            class="btn"
+            style="margin: 0; background: var(--text-sub)"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+
     <script>
       let dt = new Date();
-    let data = JSON.parse(localStorage.getItem("diaryData")) || {};
-    let selectedDateKey = null;
-    let savedPin = localStorage.getItem("diaryPin");
-    let isAnalog = false;
+      let data = JSON.parse(localStorage.getItem("diaryData")) || {};
+      let selectedDateKey = null;
+      let savedPin = localStorage.getItem("diaryPin");
+      let isAnalog = false;
 
-    // --- AUTO-LOCK LOGIC ---
-    // --- AUTO-LOCK LOGIC WITH WARNING ---
-    let idleTimer;
-    let warningTimer;
-    const idleLimit = 30000; // 30 seconds total
-    const warningTime = 10000; // 10 seconds warning
+      // --- PIN & RECOVERY ---
 
-    // Create the warning element dynamically
-    const lockWarning = document.createElement('div');
-    lockWarning.id = 'lock-warning';
-    lockWarning.style = "position:fixed; bottom:20px; right:20px; background:var(--danger); color:white; padding:12px 20px; border-radius:15px; font-weight:bold; box-shadow:0 10px 20px rgba(0,0,0,0.3); display:none; z-index:10000; animation: pulse 1s infinite;";
-    lockWarning.innerHTML = "⚠️ Locking in 10s... Move to stay!";
-    document.body.appendChild(lockWarning);
+      // Fixed: Ensure forgot link shows if question exists on load
+      function checkRecoveryLink() {
+        if (localStorage.getItem("diaryQuestion")) {
+          document.getElementById("forgot-link").style.display = "block";
+        }
+      }
+      checkRecoveryLink();
 
-    // Add CSS pulse animation for the warning
-    const style = document.createElement('style');
-    style.innerHTML = "@keyframes pulse { 0% {transform:scale(1);} 50% {transform:scale(1.05);} 100% {transform:scale(1);} }";
-    document.head.appendChild(style);
+      if (!savedPin) {
+        document.getElementById("lock-msg").innerText = "Set Your Diary PIN";
+      }
 
-    function resetIdleTimer() {
-        // Hide warning and clear both timers
-        lockWarning.style.display = 'none';
+      function validatePin() {
+        const input = document.getElementById("pin-input");
+        if (input.value.length === 4) {
+          if (!savedPin) {
+            localStorage.setItem("diaryPin", input.value);
+            savedPin = input.value;
+            const q = prompt(
+              "Set a Security Question (e.g. First pet's name):",
+            );
+            const a = prompt("Set the Answer:");
+            if (q && a) {
+              localStorage.setItem("diaryQuestion", q);
+              localStorage.setItem("diaryAnswer", a.toLowerCase().trim());
+              checkRecoveryLink();
+            }
+            unlockDiary();
+          } else if (input.value === savedPin) {
+            unlockDiary();
+          } else {
+            alert("Incorrect PIN");
+            input.value = "";
+          }
+        }
+      }
+
+      function recoverPin() {
+        const q = localStorage.getItem("diaryQuestion");
+        const a = localStorage.getItem("diaryAnswer");
+        const attempt = prompt(`SECURITY QUESTION:\n${q}`);
+        if (attempt && attempt.toLowerCase().trim() === a) {
+          alert(`Access Granted. Your PIN is: ${savedPin}`);
+          unlockDiary();
+        } else if (attempt !== null) alert("Incorrect answer.");
+      }
+
+      function unlockDiary() {
+        document.getElementById("lock-screen").style.display = "none";
+        document.getElementById("pin-input").value = "";
+        resetIdleTimer();
+      }
+
+      function manualLock() {
+        document.getElementById("lock-screen").style.display = "flex";
+        checkRecoveryLink();
+      }
+
+      function changePin() {
+        const verify = prompt("Enter current PIN:");
+        if (verify === savedPin) {
+          const np = prompt("New 4-digit PIN:");
+          if (np && np.length === 4) {
+            localStorage.setItem("diaryPin", np);
+            savedPin = np;
+            if (confirm("Update security question?")) {
+              const q = prompt("New Question:");
+              const a = prompt("New Answer:");
+              localStorage.setItem("diaryQuestion", q);
+              localStorage.setItem("diaryAnswer", a.toLowerCase().trim());
+              checkRecoveryLink();
+            }
+            alert("Settings Updated!");
+            triggerSaveFlash();
+          }
+        }
+      }
+
+      // --- IDLE LOCK ---
+      let idleTimer, warningTimer;
+      const idleLimit = 30000,
+        warningTime = 10000;
+      const lockWarning = document.createElement("div");
+      lockWarning.style =
+        "position:fixed; bottom:20px; right:20px; background:var(--danger); color:white; padding:12px 20px; border-radius:15px; font-weight:bold; box-shadow:0 10px 20px rgba(0,0,0,0.3); display:none; z-index:10000; animation: pulse 1s infinite;";
+      document.body.appendChild(lockWarning);
+
+      function resetIdleTimer() {
+        lockWarning.style.display = "none";
         clearTimeout(idleTimer);
         clearTimeout(warningTimer);
-
-        // Timer to show the warning 10s before lock
-        warningTimer = setTimeout(() => {
-            if (isUnlocked()) {
-                lockWarning.style.display = 'block';
-                startCountdown(10);
-            }
-        }, idleLimit - warningTime);
-
-        // Timer for the actual lock
-        idleTimer = setTimeout(() => {
-            if (isUnlocked()) {
-                location.reload(); 
-            }
-        }, idleLimit);
-    }
-
-    function isUnlocked() {
-        const lock = document.getElementById('lock-screen');
-        return !lock || lock.style.display === 'none';
-    }
-
-    function startCountdown(seconds) {
-        let count = seconds;
-        const interval = setInterval(() => {
-            count--;
-            lockWarning.innerHTML = `⚠️ Locking in ${count}s... Move to stay!`;
-            if (count <= 0 || lockWarning.style.display === 'none') clearInterval(interval);
-        }, 1000);
-    }
-
-    // Event listeners to detect activity
-    window.onload = resetIdleTimer;
-    window.onmousemove = resetIdleTimer;
-    window.onmousedown = resetIdleTimer; 
-    window.ontouchstart = resetIdleTimer;
-    window.onkeypress = resetIdleTimer;
-    window.onscroll = resetIdleTimer;
-
-    // --- REMINDER LOGIC ---
-    function saveReminderTime() {
-        const timeValue = document.getElementById('reminder-time').value;
-        localStorage.setItem("diaryReminderTime", timeValue);
-        triggerSaveFlash();
-    }
-
-    function requestNotificationPermission() {
-        if (!("Notification" in window)) {
-            alert("Browser doesn't support notifications.");
-            return;
+        if (document.getElementById("lock-screen").style.display === "none") {
+          warningTimer = setTimeout(() => {
+            lockWarning.style.display = "block";
+            let c = 10;
+            const cd = setInterval(() => {
+              lockWarning.innerHTML = `⚠️ Locking in ${c}s...`;
+              c--;
+              if (c < 0 || lockWarning.style.display === "none")
+                clearInterval(cd);
+            }, 1000);
+          }, idleLimit - warningTime);
+          idleTimer = setTimeout(() => {
+            lockWarning.style.display = "none"; // Hide warning when locking
+            manualLock();
+          }, idleLimit);
         }
-        Notification.requestPermission().then(permission => {
-            updateNotifStatus(permission);
-            if (permission === "granted") {
-                try {
-                    new Notification("Vault Security 🛡️", { 
-                        body: "Reminders are now active!",
-                        icon: "https://cdn-icons-png.flaticon.com/512/1066/1066371.png"
-                    });
-                } catch(e) {
-                    alert("Permission granted! If no pop-up appeared, check your Windows/Mac 'Do Not Disturb' settings.");
-                }
-            } else {
-                alert("Permission " + permission + ". Click the Lock icon in the URL bar to reset.");
-            }
-        });
-    }
+      }
+      window.onload = resetIdleTimer;
+      ["mousemove", "mousedown", "touchstart", "keypress", "scroll"].forEach(
+        (e) => window.addEventListener(e, resetIdleTimer),
+      );
 
-    function updateNotifStatus(perm) {
-        const statusText = document.getElementById('notif-status');
-        if (perm === "granted") {
-            statusText.innerText = "Permission: Active ✅";
-            statusText.style.color = "var(--success)";
-        } else if (perm === "denied") {
-            statusText.innerText = "Permission: Blocked ❌";
-            statusText.style.color = "var(--danger)";
-        } else {
-            statusText.innerText = "Permission: Not Set ⚠️";
-        }
-    }
-
-    function checkReminder() {
-        const savedTime = localStorage.getItem("diaryReminderTime");
-        if (!savedTime || Notification.permission !== "granted") return;
-        const now = new Date();
-        const currentTime = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
-        if (currentTime === savedTime) {
-            const todayKey = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
-            if (!data[todayKey] || (!data[todayKey].note && (!data[todayKey].photos || data[todayKey].photos.length === 0))) {
-                new Notification("Diary Reminder 📖", { body: "You haven't recorded anything today!" });
-            }
-        }
-    }
-    setInterval(checkReminder, 60000);
-
-    // --- CLOCK LOGIC ---
-    function updateClock() {
-        const now = new Date();
-        const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-        document.getElementById('clock-day').innerText = days[now.getDay()];
-        document.getElementById('clock-time').innerText = now.toLocaleTimeString();
-        const s = now.getSeconds(), m = now.getMinutes(), h = now.getHours();
-        if(isAnalog){
-            document.getElementById('s-hand').style.transform = `rotate(${s * 6}deg)`;
-            document.getElementById('m-hand').style.transform = `rotate(${m * 6}deg)`;
-            document.getElementById('h-hand').style.transform = `rotate(${h * 30 + m / 2}deg)`;
-        }
-    }
-    setInterval(updateClock, 1000);
-
-    function toggleClockMode() {
-        isAnalog = !isAnalog;
-        document.getElementById('digital-view').style.display = isAnalog ? 'none' : 'block';
-        document.getElementById('analog-view').style.display = isAnalog ? 'block' : 'none';
-        updateClock();
-    }
-
-    // --- PIN LOGIC ---
-    if(savedPin) document.getElementById('lock-msg').innerText = "Enter Vault PIN";
-    function validatePin() {
-        const input = document.getElementById('pin-input');
-        if (input.value.length === 4) {
-            if (!savedPin) {
-                localStorage.setItem("diaryPin", input.value);
-                unlockDiary();
-            } else if (input.value === savedPin) {
-                unlockDiary();
-            } else {
-                alert("Incorrect PIN");
-                input.value = "";
-            }
-        }
-    }
-    function unlockDiary() { document.getElementById('lock-screen').style.display = 'none'; }
-
-    // --- CALENDAR & DATA ---
-    function renderCalendar() {
+      // --- CALENDAR & CORE ---
+      function renderCalendar() {
         const grid = document.getElementById("calendarGrid");
         grid.innerHTML = "";
-        const year = dt.getFullYear(), month = dt.getMonth();
-        document.getElementById("monthDisplay").innerText = `${dt.toLocaleDateString("en-US", {month:'long'})} ${year}`;
-        ['S','M','T','W','T','F','S'].forEach(d => grid.innerHTML += `<div style="font-weight:bold; font-size:0.7rem; color:var(--text-sub)">${d}</div>`);
+        const year = dt.getFullYear(),
+          month = dt.getMonth();
+        document.getElementById("monthDisplay").innerText =
+          `${dt.toLocaleDateString("en-US", { month: "long" })} ${year}`;
+        ["S", "M", "T", "W", "T", "F", "S"].forEach(
+          (d) =>
+            (grid.innerHTML += `<div style="font-weight:bold; font-size:0.7rem; color:var(--text-sub)">${d}</div>`),
+        );
         const firstDay = new Date(year, month, 1).getDay();
-        const days = new Date(year, month+1, 0).getDate();
-        for(let i=0; i<firstDay; i++) grid.innerHTML += `<div></div>`;
-        for(let i=1; i<=days; i++) {
-            const key = `${year}-${month+1}-${i}`;
-            const isToday = i === new Date().getDate() && month === new Date().getMonth() && year === new Date().getFullYear();
-            const hasMedia = data[key]?.note || (data[key]?.photos && data[key].photos.length > 0);
-            grid.innerHTML += `<div class="day ${isToday?'today':''} ${key===selectedDateKey?'selected':''}" onclick="selectDate('${key}')">
-                ${i}${data[key]?.mood ? `<span style="font-size:0.6rem; position:absolute; bottom:2px">${data[key].mood}</span>`:''}
-                ${hasMedia ? `<div style="width:4px; height:4px; background:var(--primary-color); border-radius:50%; position:absolute; top:4px"></div>`:''}
-            </div>`;
+        const days = new Date(year, month + 1, 0).getDate();
+        for (let i = 0; i < firstDay; i++) grid.innerHTML += `<div></div>`;
+        for (let i = 1; i <= days; i++) {
+          const key = `${year}-${month + 1}-${i}`;
+          const isToday =
+            i === new Date().getDate() &&
+            month === new Date().getMonth() &&
+            year === new Date().getFullYear();
+          const hasData = data[key]?.note || data[key]?.photos?.length > 0;
+          grid.innerHTML += `<div class="day ${isToday ? "today" : ""} ${key === selectedDateKey ? "selected" : ""}" onclick="selectDate('${key}')">
+            ${i}${data[key]?.mood ? `<span style="font-size:0.6rem; position:absolute; bottom:2px">${data[key].mood}</span>` : ""}
+            ${hasData ? `<div style="width:4px; height:4px; background:var(--primary-color); border-radius:50%; position:absolute; top:4px"></div>` : ""}
+          </div>`;
         }
         updateStats();
-    }
+      }
 
-    function selectDate(key) {
+      function selectDate(key) {
         selectedDateKey = key;
-        document.getElementById("selected-date-text").innerText = `Entry for: ${key}`;
+        document.getElementById("selected-date-text").innerText =
+          `Entry for: ${key}`;
         document.getElementById("mood-section").style.display = "block";
         document.getElementById("add-btn").style.display = "block";
+        const list = document.getElementById("event-list");
+        list.innerHTML = "";
+        if (data[key]?.note) {
+          data[key].note
+            .split("\n")
+            .filter((l) => l.trim())
+            .forEach((l) => {
+              list.innerHTML += `<li style="list-style:disc; margin-left:20px; margin-bottom:5px;">${l}</li>`;
+            });
+        } else list.innerHTML = "<li>No notes for this date.</li>";
         renderGallery();
-        document.getElementById("event-list").innerHTML = data[key]?.note ? `<li>📝 ${data[key].note}</li>` : "<li>No notes for today.</li>";
         renderCalendar();
-    }
+      }
 
-    function save() {
+      function addNote() {
+        document.getElementById("modal-textarea").value =
+          data[selectedDateKey]?.note || "";
+        document.getElementById("note-modal").style.display = "flex";
+      }
+
+      function saveModalNote() {
+        if (!data[selectedDateKey]) data[selectedDateKey] = {};
+        data[selectedDateKey].note = document
+          .getElementById("modal-textarea")
+          .value.trim();
+        save();
+        closeNoteModal();
+        selectDate(selectedDateKey);
+      }
+
+      function closeNoteModal() {
+        document.getElementById("note-modal").style.display = "none";
+      }
+
+      // --- UNIFIED SAVE FUNCTION ---
+      function save() {
+        // 1. Save to the laptop/phone memory (Offline access)
         localStorage.setItem("diaryData", JSON.stringify(data));
+
+        // 2. Save to the Cloud (Sync between devices)
+        const userPin = localStorage.getItem("diaryPin");
+        if (userPin && typeof db !== "undefined") {
+          db.ref("vaults/" + userPin)
+            .set(data)
+            .then(() => console.log("Cloud Sync Successful!"))
+            .catch((err) => console.warn("Offline: Data will sync later."));
+        }
+
         triggerSaveFlash();
         renderCalendar();
-        renderGallery();
-        if(selectedDateKey) selectDate(selectedDateKey);
-    }
+      }
 
-    function handleImages(e) {
-        if(!selectedDateKey) return alert("Select a date first!");
+      function triggerSaveFlash() {
+        const ind = document.getElementById("save-indicator");
+        ind.style.opacity = "1";
+        setTimeout(() => (ind.style.opacity = "0"), 1500);
+      }
+
+      // --- MEDIA & TOOLS ---
+      function handleImages(e) {
+        if (!selectedDateKey) return alert("Select a date first!");
         const files = Array.from(e.target.files);
-        if(!data[selectedDateKey]) data[selectedDateKey] = { photos: [] };
-        files.forEach(file => {
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                if(!data[selectedDateKey].photos) data[selectedDateKey].photos = [];
-                data[selectedDateKey].photos.push(event.target.result);
-                save();
-            };
-            reader.readAsDataURL(file);
-        });
-    }
 
-    function renderGallery() {
+        files.forEach((file) => {
+          const reader = new FileReader();
+          reader.onload = (ev) => {
+            if (!data[selectedDateKey]) data[selectedDateKey] = {};
+            if (!data[selectedDateKey].photos)
+              data[selectedDateKey].photos = [];
+            data[selectedDateKey].photos.push(ev.target.result);
+            save();
+            renderGallery();
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+
+      function renderGallery() {
         const gallery = document.getElementById("photo-gallery");
         gallery.innerHTML = "";
         const photos = data[selectedDateKey]?.photos || [];
-        document.getElementById("no-photo-text").style.display = photos.length ? "none" : "block";
-        photos.forEach((src, index) => {
-            const container = document.createElement('div');
-            container.className = 'gallery-item';
-            container.innerHTML = `<img src="${src}" class="gallery-img" onclick="window.open().document.write('<img src=\\'${src}\\'>')"><button class="del-img" onclick="removeImage(${index})">×</button>`;
-            gallery.appendChild(container);
+        document.getElementById("no-photo-text").style.display = photos.length
+          ? "none"
+          : "block";
+        photos.forEach((src, i) => {
+          gallery.innerHTML += `<div class="gallery-item"><img src="${src}" class="gallery-img" onclick="window.open().document.write('<img src=\\'${src}\\'>')"><button style="position:absolute; top:5px; right:5px; background:var(--danger); color:white; border:none; border-radius:50%; width:22px; height:22px; cursor:pointer;" onclick="removeImage(${i})">×</button></div>`;
         });
-    }
+      }
 
-    function removeImage(index) { data[selectedDateKey].photos.splice(index, 1); save(); }
-
-    function updateStats() {
-        const grid = document.getElementById('statsGrid');
-        const summary = document.getElementById('mood-summary');
-        const year = dt.getFullYear(), month = dt.getMonth() + 1;
-        let counts = { '😊':0, '🤩':0, '😐':0, '😢':0, '😴':0 }, total = 0;
-        for (let key in data) {
-            const [y, m] = key.split('-').map(Number);
-            if (y === year && m === month && data[key].mood) { counts[data[key].mood]++; total++; }
+      function removeImage(i) {
+        data[selectedDateKey].photos.splice(i, 1);
+        save();
+        renderGallery();
+      }
+      function setMood(m) {
+        if (!data[selectedDateKey]) data[selectedDateKey] = {};
+        data[selectedDateKey].mood = m;
+        save();
+      }
+      function updateStats() {
+        const grid = document.getElementById("statsGrid");
+        const counts = { "😊": 0, "🤩": 0, "😐": 0, "😢": 0, "😴": 0 };
+        for (let k in data) {
+          const [y, m] = k.split("-");
+          if (parseInt(m) === dt.getMonth() + 1 && data[k].mood)
+            counts[data[k].mood]++;
         }
-        grid.innerHTML = Object.keys(counts).map(e => `<div class="stat-box"><div>${e}</div><strong>${counts[e]}</strong></div>`).join('');
-        if (total === 0) summary.innerText = "No moods this month.";
-        else {
-            const maxVal = Math.max(...Object.values(counts));
-            const topMood = Object.keys(counts).find(key => counts[key] === maxVal);
-            summary.innerText = "Monthly vibe: " + topMood;
-        }
-    }
+        grid.innerHTML = Object.entries(counts)
+          .map(
+            ([e, c]) =>
+              `<div style="font-size:0.8rem"><div>${e}</div><b>${c}</b></div>`,
+          )
+          .join("");
+      }
 
-    function addNote() {
-        const entry = prompt("Thoughts:", data[selectedDateKey]?.note || "");
-        if(entry !== null) {
-            if(!data[selectedDateKey]) data[selectedDateKey] = {};
-            data[selectedDateKey].note = entry.trim();
-            save();
-        }
-    }
+      function toggleClockMode() {
+        isAnalog = !isAnalog;
+        document.getElementById("digital-view").style.display = isAnalog
+          ? "none"
+          : "block";
+        document.getElementById("analog-view").style.display = isAnalog
+          ? "block"
+          : "none";
+      }
 
-    function setMood(emoji) { if(!data[selectedDateKey]) data[selectedDateKey] = {}; data[selectedDateKey].mood = emoji; save(); }
-    function clearMood() { if (data[selectedDateKey]?.mood) { delete data[selectedDateKey].mood; save(); } }
-    function changeMonth(dir) { dt.setMonth(dt.getMonth()+dir); renderCalendar(); }
-    function triggerSaveFlash() { const ind = document.getElementById('save-indicator'); ind.style.opacity = '1'; setTimeout(() => ind.style.opacity = '0', 1500); }
-    function exportData() { const blob = new Blob([JSON.stringify(data)], {type:"application/json"}); const url = URL.createObjectURL(blob); const a = document.createElement("a"); a.href = url; a.download = `diary-backup.json`; a.click(); }
-    function clearAllData() { if(confirm("DANGER: Delete everything?")) { localStorage.clear(); location.reload(); } }
-    
-    function searchEntries() {
-        const term = document.getElementById('search-bar').value.toLowerCase();
+      function updateClock() {
+        const now = new Date();
+        document.getElementById("clock-day").innerText = now.toLocaleDateString(
+          "en-US",
+          { weekday: "long" },
+        );
+        document.getElementById("clock-time").innerText =
+          now.toLocaleTimeString();
+        if (isAnalog) {
+          const s = now.getSeconds(),
+            m = now.getMinutes(),
+            h = now.getHours();
+          document.getElementById("s-hand").style.transform =
+            `rotate(${s * 6}deg)`;
+          document.getElementById("m-hand").style.transform =
+            `rotate(${m * 6}deg)`;
+          document.getElementById("h-hand").style.transform =
+            `rotate(${h * 30 + m / 2}deg)`;
+        }
+      }
+      setInterval(updateClock, 1000);
+
+      function searchEntries() {
+        const term = document.getElementById("search-bar").value.toLowerCase();
         if (!term) return;
         for (let key in data) {
-            if (data[key].note && data[key].note.toLowerCase().includes(term)) {
-                const [y, m, d] = key.split('-').map(Number);
-                dt = new Date(y, m - 1, 1);
-                selectedDateKey = key;
-                renderCalendar();
-                selectDate(key);
-                break;
-            }
+          if (data[key].note?.toLowerCase().includes(term)) {
+            const [y, m] = key.split("-");
+            dt = new Date(y, m - 1, 1);
+            selectDate(key);
+            break;
+          }
         }
-    }
+      }
 
-    // --- INITIALIZATION ---
-    if(localStorage.getItem('darkMode') === 'enabled') document.body.classList.add('dark-mode');
-    document.getElementById('dark-toggle').onclick = () => {
-        document.body.classList.toggle('dark-mode');
-        localStorage.setItem('darkMode', document.body.classList.contains('dark-mode') ? 'enabled' : 'disabled');
-    };
-    if(localStorage.getItem('diaryReminderTime')) document.getElementById('reminder-time').value = localStorage.getItem('diaryReminderTime');
-    if ("Notification" in window) updateNotifStatus(Notification.permission);
-    document.getElementById('colorPicker').oninput = (e) => document.documentElement.style.setProperty('--primary-color', e.target.value);
-    
-    const quotes = ["Create your own sunshine.",
-      "Keep your face always toward the sunshine—and shadows will fall behind you — Walt Whitman.",
-      "Happiness is not something readymade. It comes from your own actions — Dalai Lama.",
-      "Your talent determines what you can do. Your motivation determines how much you are willing to do — Lou Holtz.",
-      "Everything you’ve ever wanted is on the other side of fear — George Addair.",
-      "Do not count the days rather make the days count — Muhammad Ali.",
-      "The secret of getting ahead is getting started — Mark Twain.",
-      "Start where you are. Use what you have. Do what you can.",
-      "The only limit to our realization of tomorrow is our doubts of today.",
-      "Happiness is not by chance, but by choice.",
-      "Do something today that your future self will thank you for.",
-      "Potential is endless.", "Every day provides its own gifts.",
-      "Believe you can and you're halfway there.", "Gifts in every day."];
-    document.getElementById('quote-text').innerText = quotes[new Date().getDate() % quotes.length];
+      function exportData() {
+        const blob = new Blob([JSON.stringify(data)], {
+          type: "application/json",
+        });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = `diary-backup.json`;
+        a.click();
+      }
 
-    renderCalendar();
-    updateClock();
+      function debugVault() {
+        const storedData = localStorage.getItem("diaryData");
+        if (!storedData) {
+          alert("Vault Status: Completely Empty 📭");
+          return;
+        }
+
+        const parsedData = JSON.parse(storedData);
+        const totalDays = Object.keys(parsedData).length;
+        let totalNotes = 0;
+        let totalPhotos = 0;
+        let dateList = [];
+
+        for (let date in parsedData) {
+          if (parsedData[date].note) totalNotes++;
+          if (parsedData[date].photos)
+            totalPhotos += parsedData[date].photos.length;
+          dateList.push(date);
+        }
+
+        // Show a detailed breakdown
+        alert(
+          `🛡️ VAULT AUDIT 🛡️\n\n` +
+            `• Total days recorded: ${totalDays}\n` +
+            `• Total text entries: ${totalNotes}\n` +
+            `• Total photos stored: ${totalPhotos}\n` +
+            `• Recorded Dates: ${dateList.slice(0, 5).join(", ")}${dateList.length > 5 ? "..." : ""}\n\n` +
+            `If these numbers are correct but the calendar looks empty, check your PIN or the current Year/Month.`,
+        );
+
+        console.log("Full Vault Data:", parsedData);
+      }
+
+      /**
+       * Handles the restoration of diary data from a JSON file.
+       * This will overwrite current browser data with the backup file data.
+       */
+      function importData(event) {
+        const file = event.target.files[0];
+
+        // 1. Exit if no file was selected
+        if (!file) return;
+
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+          try {
+            // 2. Parse the file content into a JSON object
+            const importedData = JSON.parse(e.target.result);
+
+            // 3. Simple validation: Check if the file is an object
+            if (typeof importedData === "object" && importedData !== null) {
+              // 4. Confirm with the user before overwriting
+              if (
+                confirm(
+                  "This will replace all current entries with the backup data. Proceed?",
+                )
+              ) {
+                // Update the global data variable
+                data = importedData;
+
+                // Save to localStorage
+                localStorage.setItem("diaryData", JSON.stringify(data));
+
+                alert("Vault restored successfully! 📂");
+
+                // 5. Force reload to refresh the UI and Calendar
+                location.reload();
+              }
+            } else {
+              throw new Error("Invalid format");
+            }
+          } catch (err) {
+            // 6. Error handling for corrupted or non-JSON files
+            console.error("Restore Error:", err);
+            alert(
+              "Error: The file is corrupted or is not a valid diary backup.",
+            );
+          }
+        };
+
+        // Read the file as a plain text string
+        reader.readAsText(file);
+      }
+
+      function setMood(emoji) {
+        if (!data[selectedDateKey]) data[selectedDateKey] = {};
+        data[selectedDateKey].mood = emoji;
+        save();
+        renderCalendar();
+      }
+      function clearMood() {
+        if (data[selectedDateKey]?.mood) {
+          delete data[selectedDateKey].mood;
+          save();
+          renderCalendar();
+        }
+      }
+
+      function clearAllData() {
+        if (confirm("DANGER: Delete everything?")) {
+          localStorage.clear();
+          location.reload();
+        }
+      }
+      function changeMonth(dir) {
+        dt.setMonth(dt.getMonth() + dir);
+        renderCalendar();
+      }
+      function saveReminderTime() {
+        localStorage.setItem(
+          "diaryReminderTime",
+          document.getElementById("reminder-time").value,
+        );
+        triggerSaveFlash();
+      }
+      function requestNotificationPermission() {
+        Notification.requestPermission().then((p) => updateNotifStatus(p));
+      }
+      function updateNotifStatus(p) {
+        const s = document.getElementById("notif-status");
+        s.innerText = `Permission: ${p}`;
+        s.style.color = p === "granted" ? "var(--success)" : "var(--danger)";
+      }
+
+      // Init
+      const quotes = [
+        "Create your own sunshine.",
+        "Keep your face always toward the sunshine—and shadows will fall behind you — Walt Whitman.",
+        "Happiness is not something readymade. It comes from your own actions — Dalai Lama.",
+        "Your talent determines what you can do. Your motivation determines how much you are willing to do — Lou Holtz.",
+        "Everything you’ve ever wanted is on the other side of fear — George Addair.",
+        "Do not count the days rather make the days count — Muhammad Ali.",
+        "The secret of getting ahead is getting started — Mark Twain.",
+        "Start where you are. Use what you have. Do what you can.",
+        "The only limit to our realization of tomorrow is our doubts of today.",
+        "Happiness is not by chance, but by choice.",
+        "Do something today that your future self will thank you for.",
+        "Potential is endless.",
+        "Every day provides its own gifts.",
+        "Believe you can and you're halfway there.",
+        "Gifts in every day.",
+      ];
+      document.getElementById("quote-text").innerText =
+        quotes[new Date().getDate() % quotes.length];
+      if (localStorage.getItem("darkMode") === "enabled")
+        document.body.classList.add("dark-mode");
+      document.getElementById("dark-toggle").onclick = () => {
+        document.body.classList.toggle("dark-mode");
+        localStorage.setItem(
+          "darkMode",
+          document.body.classList.contains("dark-mode")
+            ? "enabled"
+            : "disabled",
+        );
+      };
+      if (localStorage.getItem("diaryReminderTime"))
+        document.getElementById("reminder-time").value =
+          localStorage.getItem("diaryReminderTime");
+      if ("Notification" in window) updateNotifStatus(Notification.permission);
+
+      renderCalendar();
+      updateClock();
+    </script>
+
+    <script src="./firebase-app-compat.js"></script>
+
+    <script>
+      // --- UPDATED FIREBASE INITIALIZATION ---
+      const firebaseConfig = {
+        apiKey: "AIzaSyAIqukrxIvEICFKR89FkdRSaP7bLcCVmLM",
+        authDomain: "my-diary-7fa90.firebaseapp.com",
+        databaseURL: "https://my-diary-7fa90-default-rtdb.firebaseio.com",
+        projectId: "my-diary-7fa90",
+        storageBucket: "my-diary-7fa90.firebasestorage.app",
+        messagingSenderId: "573736148066",
+        appId: "1:573736148066:web:49cdd5e26499e4fcc8853b",
+      };
+
+      firebase.initializeApp(firebaseConfig);
+      const db = firebase.database();
+
+      // Enable Offline Persistence so Firebase waits for internet to sync
+      db.ref().keepSynced(true);
+
+      async function syncFromCloud() {
+        const userPin = localStorage.getItem("diaryPin");
+        if (!userPin) return;
+
+        db.ref("vaults/" + userPin).on("value", (snapshot) => {
+          const cloudData = snapshot.val();
+          if (cloudData) {
+            data = cloudData;
+            localStorage.setItem("diaryData", JSON.stringify(data));
+            renderCalendar();
+            console.log("Devices Synced!");
+          }
+        });
+      }
+
+      window.addEventListener("DOMContentLoaded", syncFromCloud);
+
+      // 3. This tells the diary to look at the bookshelf when you open it
+      async function syncFromCloud() {
+        const userPin = localStorage.getItem("diaryPin");
+        if (!userPin) return;
+
+        // It looks for a folder named after your PIN
+        const snapshot = await db.ref("vaults/" + userPin).once("value");
+        const cloudData = snapshot.val();
+
+        if (cloudData) {
+          data = cloudData;
+          localStorage.setItem("diaryData", JSON.stringify(data));
+          renderCalendar();
+          console.log("Magic Bookshelf synced!");
+        }
+      }
+
+      // 4. We update your 'save' function to send data to the sky
+      function saveToCloud() {
+        localStorage.setItem("diaryData", JSON.stringify(data));
+
+        const userPin = localStorage.getItem("diaryPin");
+        if (userPin) {
+          db.ref("vaults/" + userPin).set(data);
+        }
+
+        triggerSaveFlash();
+        renderCalendar();
+      }
+
+      // All your other diary functions (renderCalendar, selectDate, etc.)
+      // stay exactly the same as they were before!
+
+      // Start the sync when you open the file
+      window.addEventListener("DOMContentLoaded", syncFromCloud);
+
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker
+            .register("./sw.js")
+            .then((reg) => console.log("Service Worker registered!"))
+            .catch((err) => console.log("Service Worker failed:", err));
+        });
+      }
+
+      /**
+       * Compresses an image file
+       * @param {File} file - The original image file
+       * @param {number} maxWidth - Max width in pixels
+       * @param {number} quality - Quality from 0 to 1 (0.7 is the sweet spot)
+       */
+      function compressImage(file, maxWidth = 800, quality = 0.7) {
+        return new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = (event) => {
+            const img = new Image();
+            img.src = event.target.result;
+            img.onload = () => {
+              const canvas = document.createElement("canvas");
+              let width = img.width;
+              let height = img.height;
+
+              // Maintain aspect ratio
+              if (width > maxWidth) {
+                height = (maxWidth / width) * height;
+                width = maxWidth;
+              }
+
+              canvas.width = width;
+              canvas.height = height;
+
+              const ctx = canvas.getContext("2d");
+              ctx.drawImage(img, 0, 0, width, height);
+
+              // Convert to compressed JPEG DataURL
+              const compressedDataUrl = canvas.toDataURL("image/jpeg", quality);
+              resolve(compressedDataUrl);
+            };
+          };
+        });
+      }
     </script>
   </body>
 </html>
-
-
-
-
-
-

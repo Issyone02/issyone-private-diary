@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "my-diary-7fa90"
+  },
+  "targets": {
+    "my-diary-7fa90": {
+      "hosting": {
+        "diary-vault": [
+          "my-diary-7fa90"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}
