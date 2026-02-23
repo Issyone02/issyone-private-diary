@@ -6,6 +6,7 @@
     <title>My Daily Diary Vault</title>
     <link rel="manifest" href="./manifest.json" />
     <style>
+      /* DESIGN TOKENS: Variables for consistent theming */
       :root {
         --primary-color: #764ba2;
         --accent: #ff007a;
@@ -24,6 +25,8 @@
         --info: #0984e3;
       }
 
+      /* DARK MODE THEME */
+
       body.dark-mode {
         --bg-gradient: linear-gradient(135deg, #1e1e2f 0%, #121212 100%);
         --card-bg: #1e1e1e;
@@ -33,6 +36,7 @@
         --hover: #2d2d2d;
       }
 
+      /* BASE STYLES */
       body {
         font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
         background: var(--bg-gradient);
@@ -45,7 +49,7 @@
         transition: all 0.3s ease;
       }
 
-      /* Widgets */
+      /* CLOCK WIDGETS */
       #time-widget-container {
         position: absolute;
         top: 60px;
@@ -210,6 +214,7 @@
         }
       }
 
+      /* LAYOUT BLOCKS */
       .card {
         background: var(--card-bg);
         padding: 20px;
@@ -245,6 +250,7 @@
         color: var(--text-main);
       }
 
+      /* CALENDAR STYLING */
       .calendar-grid {
         display: grid;
         grid-template-columns: repeat(7, 1fr);
@@ -275,6 +281,7 @@
         color: white;
       }
 
+      /* BUTTONS */
       .btn {
         background: var(--primary-color);
         color: white;
@@ -321,6 +328,8 @@
         font-size: 0.95rem;
         text-align: left;
       }
+
+      /* MODAL STYLES */
       #note-modal {
         display: none;
         position: fixed;
@@ -335,6 +344,7 @@
         justify-content: center;
       }
 
+      /* GALLERY STYLES */
       .photo-gallery {
         display: flex;
         gap: 10px;
@@ -366,6 +376,73 @@
         }
         100% {
           transform: scale(1);
+        }
+      }
+
+      /* MOBILE RESPONSIVE OVERRIDES */
+      @media (max-width: 768px) {
+        body {
+          padding: 10px;
+        }
+
+        /* Center title and widgets */
+        .main-title {
+          margin-top: 100px; /* Space for the clock */
+        }
+
+        #time-widget-container {
+          position: relative;
+          top: 0;
+          right: 0;
+          margin-bottom: 20px;
+          display: flex;
+          justify-content: center;
+          width: 100%;
+        }
+
+        .digital-clock {
+          text-align: center;
+        }
+
+        /* Stack layout vertically and center */
+        .page-wrapper {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        #side-panel,
+        #calendar-container {
+          width: 100%;
+          max-width: 100%;
+          min-width: 0;
+          box-sizing: border-box;
+        }
+
+        /* Center the control panel buttons */
+        #controls {
+          border-radius: 15px;
+          padding: 15px;
+          width: 100%;
+          box-sizing: border-box;
+          justify-content: center;
+        }
+
+        /* Search bar centering */
+        #search-container {
+          width: 100%;
+        }
+
+        /* Scale calendar for small screens */
+        #calendar-container {
+          padding: 1rem;
+        }
+
+        .calendar-grid {
+          gap: 4px;
+        }
+
+        .day {
+          font-size: 0.9rem;
         }
       }
     </style>
